@@ -1,12 +1,45 @@
 const Post = require('../models/post.model')
+const Comment = require('../models/comment.model')
+const Like = require('../models/like.model')
 const helpers = require('../helpers/index')
 const { v4: uuidv4 } = require('uuid')
 
 const user = {
   allPost: async (req, res) => {
+    const id = req.userId
     try {
-      const response = await Post.all()
+      const response = await Post.all(id)
       const result = response
+      let arrBaru = []
+      await Promise.all(
+        result.map(async (post) => {
+          let resComment = await Comment.getCommentByIdPost(post.id)
+          let resLike = await Like.getLikeByIdPost(post.id)
+          post.comments = resComment
+          post.likes = resLike
+          arrBaru.push(post)
+        }),
+      )
+      helpers.response(res, 200, result, helpers.status.found)
+    } catch (err) {
+      helpers.response(res, 400, [], err, true)
+    }
+  },
+  getPostUser: async (req, res) => {
+    const id = req.params.id
+    try {
+      const response = await Post.postUser(id)
+      const result = response
+      let arrBaru = []
+      await Promise.all(
+        result.map(async (post) => {
+          let resComment = await Comment.getCommentByIdPost(post.id)
+          let resLike = await Like.getLikeByIdPost(post.id)
+          post.comments = resComment
+          post.likes = resLike
+          arrBaru.push(post)
+        }),
+      )
       helpers.response(res, 200, result, helpers.status.found)
     } catch (err) {
       helpers.response(res, 400, [], err, true)
@@ -76,7 +109,9 @@ const user = {
           return helpers.response(res, 400, [], 'Post not found', true)
         } else {
           Post.delete(id)
-            .then((deletedPost) => {
+            .then(async (deletedPost) => {
+              await Comment.deleteByIdPost(id)
+              await Like.deleteByIdPost(id)
               helpers.response(res, 200, deletedPost, helpers.status.delete)
             })
             .catch((err) => {

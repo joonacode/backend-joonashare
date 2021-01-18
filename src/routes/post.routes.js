@@ -10,6 +10,7 @@ const {
 
 router
   .get('/', verifyToken, postController.allPost)
+  .get('/post-user/:id', verifyToken, postController.getPostUser)
   .get('/:id', verifyToken, postController.detailPost)
   .patch('/:id', verifyToken, POST_UPDATEPOST, postController.updatePost)
   .post(

@@ -8,7 +8,10 @@ const comment = {
     )
   },
   getCommentByIdPost: (postId) => {
-    return queryHelper(`SELECT * FROM post_comments WHERE post_id = ?`, postId)
+    return queryHelper(
+      `SELECT post_comments.*, users.username FROM post_comments INNER JOIN users on users.id = post_comments.user_id WHERE post_id = ?`,
+      postId,
+    )
   },
   checkComment: (commentId, postId, userId) => {
     return queryHelper(
@@ -24,6 +27,9 @@ const comment = {
       `DELETE FROM post_comments WHERE id = ? AND post_id = ? AND user_id = ?`,
       [commentId, postId, userId],
     )
+  },
+  deleteByIdPost: (postId) => {
+    return queryHelper(`DELETE FROM post_comments WHERE post_id = ?`, [postId])
   },
 }
 

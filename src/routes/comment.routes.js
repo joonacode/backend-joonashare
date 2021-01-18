@@ -10,6 +10,6 @@ const {
 router
   .get('/:id', verifyToken, commentController.getByIdPost)
   .post('/', verifyToken, COMMENT_INSERT, commentController.insert)
-  .delete('/', verifyToken, COMMENT_DELETE, commentController.delete)
+  .patch('/delete', verifyToken, COMMENT_DELETE, commentController.delete)
 
 module.exports = router

@@ -25,6 +25,9 @@ const like = {
       [post_id, user_id],
     )
   },
+  deleteByIdPost: (post_id) => {
+    return queryHelper(`DELETE FROM post_likes WHERE post_id = ?`, [post_id])
+  },
 }
 
 module.exports = like

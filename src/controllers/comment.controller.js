@@ -41,7 +41,7 @@ const commentController = {
       const resComment = await Comment.getTotalCommentByIdPost(post_id)
       const resTotalComment = resComment[0].totalFound
       await Post.update(post_id, { total_comments: resTotalComment })
-      helpers.response(res, 400, resTotalComment, helpers.status.insert)
+      helpers.response(res, 200, resTotalComment, helpers.status.insert)
     } catch (err) {
       helpers.response(res, 400, [], err, true)
     }
@@ -52,7 +52,7 @@ const commentController = {
       const response = await Comment.delete(comment_id, post_id, user_id)
       const totalComment = await Comment.getTotalCommentByIdPost(post_id)
       await Post.update(post_id, { total_comments: totalComment[0].totalFound })
-      helpers.response(res, 400, response, helpers.status.delete)
+      helpers.response(res, 200, response, helpers.status.delete)
     } catch (err) {
       helpers.response(res, 400, [], err, true)
     }
